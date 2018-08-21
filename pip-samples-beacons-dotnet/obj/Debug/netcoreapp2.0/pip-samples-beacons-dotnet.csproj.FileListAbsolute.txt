@@ -1,8 +1,0 @@
-D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\pip-samples-beacons-dotnet\bin\Debug\netcoreapp2.0\pip-samples-beacons-dotnet.deps.json
-D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\pip-samples-beacons-dotnet\bin\Debug\netcoreapp2.0\pip-samples-beacons-dotnet.runtimeconfig.json
-D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\pip-samples-beacons-dotnet\bin\Debug\netcoreapp2.0\pip-samples-beacons-dotnet.runtimeconfig.dev.json
-D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\pip-samples-beacons-dotnet\bin\Debug\netcoreapp2.0\pip-samples-beacons-dotnet.dll
-D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\pip-samples-beacons-dotnet\obj\Debug\netcoreapp2.0\pip-samples-beacons-dotnet.csprojAssemblyReference.cache
-D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\pip-samples-beacons-dotnet\obj\Debug\netcoreapp2.0\pip-samples-beacons-dotnet.csproj.CoreCompileInputs.cache
-D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\pip-samples-beacons-dotnet\obj\Debug\netcoreapp2.0\pip-samples-beacons-dotnet.AssemblyInfoInputs.cache
-D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\pip-samples-beacons-dotnet\obj\Debug\netcoreapp2.0\pip-samples-beacons-dotnet.AssemblyInfo.cs
