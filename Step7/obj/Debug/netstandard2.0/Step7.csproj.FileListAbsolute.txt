@@ -1,0 +1,9 @@
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\bin\Debug\netstandard2.0\Step7.deps.json
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\bin\Debug\netstandard2.0\Step7.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\bin\Debug\netstandard2.0\Step2.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\bin\Debug\netstandard2.0\Step2.pdb
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\obj\Debug\netstandard2.0\Step7.csprojAssemblyReference.cache
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\obj\Debug\netstandard2.0\Step7.csproj.CoreCompileInputs.cache
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\obj\Debug\netstandard2.0\Step7.AssemblyInfoInputs.cache
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\obj\Debug\netstandard2.0\Step7.AssemblyInfo.cs
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step7\obj\Debug\netstandard2.0\Step7.csproj.CopyComplete

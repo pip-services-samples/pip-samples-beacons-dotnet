@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Container\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PipServices.Container" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Step2\Step2.csproj" />
+    <ProjectReference Include="..\Step3\Step3.csproj" />
+    <ProjectReference Include="..\Step4\Step4.csproj" />
+    <ProjectReference Include="..\Step5\Step5.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Version1\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PipServices.Rpc" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Step2\Step2.csproj" />
+    <ProjectReference Include="..\Step4\Step4.csproj" />
+  </ItemGroup>
+
+</Project>

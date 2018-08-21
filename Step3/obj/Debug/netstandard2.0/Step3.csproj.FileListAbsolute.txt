@@ -1,0 +1,16 @@
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\Step3.deps.json
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\Step3.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\obj\Debug\netstandard2.0\Step3.csprojAssemblyReference.cache
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\obj\Debug\netstandard2.0\Step3.csproj.CoreCompileInputs.cache
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\obj\Debug\netstandard2.0\Step3.AssemblyInfoInputs.cache
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\obj\Debug\netstandard2.0\Step3.AssemblyInfo.cs
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\Step2.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\Step2.pdb
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\obj\Debug\netstandard2.0\Step3.csproj.CopyComplete
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\xunit.runner.visualstudio.testadapter.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\xunit.runner.reporters.net452.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\xunit.runner.utility.net452.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\xunit.abstractions.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\bin\Debug\netstandard2.0\Step3.pdb
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\obj\Debug\netstandard2.0\Step3.dll
+D:\Work\Project\Core .Net\pip-samples-beacons-dotnet\Step3\obj\Debug\netstandard2.0\Step3.pdb
