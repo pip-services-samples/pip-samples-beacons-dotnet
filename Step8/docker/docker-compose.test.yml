@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  test:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.test
+    image: ${IMAGE:-rc}
+    command: ${TEST_CMD:-bash -c "dotnet test Step5/Step5.csproj && dotnet test Step7/Step7.csproj"}
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_ENABLED=true
+      - MONGO_SERVICE_URI=mongodb://localhost:27017/beacons
+      - MONGO_COLLECTION=beacons
+
+  mongo:
+    image: mongo:latest
+

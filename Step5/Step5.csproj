@@ -5,16 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Version1\" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Services\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="PipServices.Commons" Version="3.0.4" />
+    <PackageReference Include="PipServices.Components" Version="3.0.3" />
+    <PackageReference Include="PipServices.Data" Version="3.0.1" />
+    <PackageReference Include="PipServices.MongoDb" Version="3.0.1" />
     <PackageReference Include="PipServices.Rpc" Version="3.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Step2\Step2.csproj" />
-    <ProjectReference Include="..\Step4\Step4.csproj" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
 
 </Project>

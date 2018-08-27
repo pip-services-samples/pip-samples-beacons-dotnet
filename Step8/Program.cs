@@ -1,11 +1,11 @@
-﻿using Step6.Container;
+﻿using Container;
 using System;
 
-namespace Step8.Process
+namespace Step8
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             try
             {
