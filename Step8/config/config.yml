@@ -34,6 +34,21 @@
 # Default controller
 - descriptor: "pip-samples-beacons:controller:default:default:1.0"
 
+# HTTP endpoint version 1.0
+- descriptor: "pip-samples-beacons:service:http:default:1.0"
+
+# Heartbeat service
+- descriptor: "pip-services:heartbeat-service:http:default:1.0"
+  route: ping
+
+# Status service
+- descriptor: "pip-services:status-service:http:default:1.0"
+  route: status
+
+# Prometheus accounts service
+#- descriptor: "pip-services:metrics-service:prometheus:default:1.0"
+
+
 # HTTP service version 1.0
 - descriptor: "pip-samples-beacons:service:http:default:1.0"
   connection:
@@ -41,9 +56,9 @@
     host: "0.0.0.0"
     port: 8080
 
-# HTTP endpoint version 1.0
+# Common HTTP endpoint
 - descriptor: "pip-services:endpoint:http:default:1.0"
   connection:
     protocol: "http"
     host: "0.0.0.0"
-    port: 8080
+    port: {{{HTTP_PORT}}}{{^HTTP_PORT}}8080{{/HTTP_PORT}}
