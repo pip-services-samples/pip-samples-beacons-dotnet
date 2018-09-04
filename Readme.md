@@ -24,7 +24,7 @@ The implementation is divided into 9 steps:
 * [Step 1](step1): Creating project structure
 * [Step 2](step2): Defining data objects
 * [Step 3](step3): Implementing persistence components with tests
-* [Step 4](step4): Implementing controller compomnent with tests
+* [Step 4](step4): Implementing controller component with tests
 * [Step 5](step5): Implementing HTTP service using command pattern
 * [Step 6](step6): Wrapping the service into container
 * [Step 7](step7): Implementing client SDK with tests
