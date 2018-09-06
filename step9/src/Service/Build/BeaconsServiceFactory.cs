@@ -1,18 +1,18 @@
 ﻿using PipServices.Commons.Refer;
 using PipServices.Components.Build;
-using Service.Persistence;
-using Service.Logic;
-using Service.Services.Version1;
+using Beacons.Persistence;
+using Beacons.Logic;
+using Beacons.Services.Version1;
 
-namespace Service.Build
+namespace Beacons.Build
 {
-    public class BeaconsServiceFactory: Factory
+    public class BeaconsServiceFactory : Factory
     {
-        public static Descriptor Descriptor = new Descriptor("pip-samples-beacons", "factory", "service", "default", "1.0");
-        public static Descriptor MemoryPersistenceDescriptor = new Descriptor("pip-samples-beacons", "persistence", "memory", "*", "1.0");
-        public static Descriptor MongoDbPersistenceDescriptor = new Descriptor("pip-samples-beacons", "persistence", "mongodb", "*", "1.0");
-        public static Descriptor ControllerDescriptor = new Descriptor("pip-samples-beacons", "controller", "default", "*", "1.0");
-        public static Descriptor HttpServiceDescriptor = new Descriptor("pip-samples-beacons", "service", "http", "*", "1.0");        
+        public static Descriptor Descriptor = new Descriptor("beacons", "factory", "service", "default", "1.0");
+        public static Descriptor MemoryPersistenceDescriptor = new Descriptor("beacons", "persistence", "memory", "*", "1.0");
+        public static Descriptor MongoDbPersistenceDescriptor = new Descriptor("beacons", "persistence", "mongodb", "*", "1.0");
+        public static Descriptor ControllerDescriptor = new Descriptor("beacons", "controller", "default", "*", "1.0");
+        public static Descriptor HttpServiceDescriptor = new Descriptor("beacons", "service", "http", "*", "1.0");
 
 
         public BeaconsServiceFactory()
@@ -20,7 +20,7 @@ namespace Service.Build
             RegisterAsType(MemoryPersistenceDescriptor, typeof(BeaconsMemoryPersistence));
             RegisterAsType(MongoDbPersistenceDescriptor, typeof(BeaconsMongoDbPersistence));
             RegisterAsType(ControllerDescriptor, typeof(BeaconsController));
-            RegisterAsType(HttpServiceDescriptor, typeof(BeaconsHttpServiceV1));            
+            RegisterAsType(HttpServiceDescriptor, typeof(BeaconsHttpServiceV1));
         }
     }
 }

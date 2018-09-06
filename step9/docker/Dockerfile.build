@@ -1,5 +1,5 @@
 # Build stage
-FROM microsoft/aspnetcore-build:2 AS build
+FROM microsoft/dotnet:2.1-sdk AS build
 
 # set working directory
 WORKDIR /app
@@ -13,10 +13,22 @@ COPY src/Client/Client.csproj ./src/Client/
 RUN dotnet restore src/Client/Client.csproj
 COPY src/Process/Process.csproj ./src/Process/
 RUN dotnet restore src/Process/Process.csproj
+COPY test/Service.Test/Service.Test.csproj ./test/Service.Test/
+RUN dotnet restore test/Service.Test/Service.Test.csproj
+COPY test/Client.Test/Client.Test.csproj ./test/Client.Test/
+RUN dotnet restore test/Client.Test/Client.Test.csproj
 
 # Copy src
 COPY . .
 
 # Publish
-RUN dotnet publish src/Client/Client.csproj -o /obj
+RUN dotnet build src/Client/Client.csproj
+RUN dotnet publish src/Client/Client.csproj --force -o /obj
+RUN dotnet build src/Process/Process.csproj
+RUN dotnet publish src/Process/Process.csproj --force -o /obj
 
+# Pack Nuget
+RUN dotnet build src/Interface/Interface.csproj -c Release
+RUN dotnet pack src/Interface/Interface.csproj -c Release -o ../../../dist
+RUN dotnet build src/Client/Client.csproj -c Release
+RUN dotnet pack src/Client/Client.csproj -c Release -o ../../../dist

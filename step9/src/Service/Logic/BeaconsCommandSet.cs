@@ -1,22 +1,21 @@
-﻿using Interface.Data.Version1;
-using Interface.Logic;
+﻿using Beacons.Data.Version1;
 using PipServices.Commons.Commands;
 using PipServices.Commons.Data;
+using PipServices.Commons.Convert;
 using PipServices.Commons.Validate;
-using System;
 
-namespace Service.Logic 
+namespace Beacons.Logic
 {
-    public class BeaconsCommandSet: CommandSet
+    public class BeaconsCommandSet : CommandSet
     {
-        private IBeaconsController _Controller;
+        private IBeaconsController _controller;
 
-        public BeaconsCommandSet(IBeaconsController Controller)
+        public BeaconsCommandSet(IBeaconsController controller)
         {
-            _Controller = Controller;
+            _controller = controller;
 
             AddCommand(MakeGetBeaconsCommand());
-            AddCommand(MakeGetOneByIdBeaconsCommand());
+            AddCommand(MakeGetBeaconByIdBeaconsCommand());
             AddCommand(MakeGetBeaconByUdiCommand());
             AddCommand(MakeCalculatePositionCommand());
             AddCommand(MakeCreateBeaconCommand());
@@ -35,20 +34,20 @@ namespace Service.Logic
                 {
                     var filter = FilterParams.FromValue(parameters.Get("filter"));
                     var paging = PagingParams.FromValue(parameters.Get("paging"));
-                    return await _Controller.GetPageByFilterAsync(correlationId, filter, paging);
+                    return await _controller.GetBeaconsAsync(correlationId, filter, paging);
                 });
         }
 
-        private ICommand MakeGetOneByIdBeaconsCommand()
+        private ICommand MakeGetBeaconByIdBeaconsCommand()
         {
             return new Command(
-                "get_beacon",
+                "get_beacon_by_id",
                 new ObjectSchema()
-                    .WithRequiredProperty("id", TypeCode.String),
+                    .WithRequiredProperty("beacon_id", TypeCode.String),
                 async (correlationId, parameters) =>
                 {
-                    var id = parameters.GetAsString("id");
-                    return await _Controller.GetOneByIdAsync(correlationId, id);
+                    var id = parameters.GetAsString("beacon_id");
+                    return await _controller.GetBeaconByIdAsync(correlationId, id);
                 });
         }
 
@@ -61,7 +60,7 @@ namespace Service.Logic
                 async (correlationId, parameters) =>
                 {
                     var udi = parameters.GetAsString("udi");
-                    return await _Controller.GetOneByUdiAsync(correlationId, udi);
+                    return await _controller.GetBeaconByUdiAsync(correlationId, udi);
                 });
         }
 
@@ -76,7 +75,7 @@ namespace Service.Logic
                 {
                     var siteId = parameters.GetAsString("site_id");
                     string udis = parameters.GetAsString("udis");
-                    return await _Controller.CalculatePosition(correlationId, siteId, new []{ udis });
+                    return await _controller.CalculatePositionAsync(correlationId, siteId, new[] { udis });
                 });
         }
 
@@ -85,11 +84,11 @@ namespace Service.Logic
             return new Command(
                 "create_beacon",
                 new ObjectSchema()
-                    .WithOptionalProperty("beacon", new BeaconV1Schema()),
+                    .WithRequiredProperty("beacon", new BeaconV1Schema()),
                 async (correlationId, parameters) =>
                 {
-                    var beacon = (BeaconV1)parameters.Get("beacon");
-                    return await _Controller.CreateAsync(correlationId, beacon);
+                    var beacon = ConvertToBeacon(parameters.GetAsObject("beacon"));
+                    return await _controller.CreateBeaconAsync(correlationId, beacon);
                 });
         }
 
@@ -98,25 +97,30 @@ namespace Service.Logic
             return new Command(
                "update_beacon",
                new ObjectSchema()
-                   .WithOptionalProperty("beacon", new BeaconV1Schema()),
+                    .WithRequiredProperty("beacon", new BeaconV1Schema()),
                async (correlationId, parameters) =>
                {
-                   var beacon = (BeaconV1)parameters.Get("beacon");
-                   return await _Controller.UpdateAsync(correlationId, beacon);
+                   var beacon = ConvertToBeacon(parameters.GetAsObject("beacon"));
+                   return await _controller.UpdateBeaconAsync(correlationId, beacon);
                });
         }
 
         private ICommand MakeDeleteBeaconByIdCommand()
         {
             return new Command(
-               "delete_beacon",
+               "delete_beacon_by_id",
                new ObjectSchema()
-                   .WithRequiredProperty("id", TypeCode.String),
+                   .WithRequiredProperty("beacon_id", TypeCode.String),
                async (correlationId, parameters) =>
                {
-                   var id = parameters.GetAsString("id");
-                   return await _Controller.DeleteByIdAsync(correlationId, id);
+                   var id = parameters.GetAsString("beacon_id");
+                   return await _controller.DeleteBeaconByIdAsync(correlationId, id);
                });
+        }
+
+        private BeaconV1 ConvertToBeacon(object value)
+        {
+            return JsonConverter.FromJson<BeaconV1>(JsonConverter.ToJson(value));
         }
 
     }

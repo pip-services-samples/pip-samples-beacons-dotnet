@@ -1,14 +1,14 @@
 ﻿using PipServices.Commons.Refer;
 using PipServices.Rpc.Services;
 
-namespace Service.Services.Version1
+namespace Beacons.Services.Version1
 {
     public class BeaconsHttpServiceV1: CommandableHttpService
     {
         public BeaconsHttpServiceV1()
-            : base("api/v1/beacons")
+            : base("v1/beacons")
         {
-            _dependencyResolver.Put("controller", new Descriptor("pip-samples-beacons", "controller", "default", "*", "1.0"));
+            _dependencyResolver.Put("controller", new Descriptor("beacons", "controller", "default", "*", "1.0"));
         }
     }
 }

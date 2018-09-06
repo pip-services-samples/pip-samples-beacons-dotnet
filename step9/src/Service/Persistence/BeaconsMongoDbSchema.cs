@@ -1,11 +1,11 @@
-﻿using Interface.Data.Version1;
+﻿using Beacons.Data.Version1;
 using MongoDB.Bson.Serialization.Attributes;
 using PipServices.Commons.Data;
 
-namespace Service.Persistence
+namespace Beacons.Persistence
 {
     [BsonIgnoreExtraElements]
-    public class BeaconsMongoDbSchema: IStringIdentifiable
+    public class BeaconsMongoDbSchema : IStringIdentifiable
     {
         [BsonElement("id")]
         public string Id { get; set; }
@@ -18,7 +18,7 @@ namespace Service.Persistence
         [BsonElement("label")]
         public string Label { get; set; }
         [BsonElement("center")]
-        public CenterObject Center { get; set; }
+        public CenterObjectV1 Center { get; set; }
         [BsonElement("radius")]
         public double Radius { get; set; }
 

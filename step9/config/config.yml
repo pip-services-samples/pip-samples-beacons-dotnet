@@ -14,7 +14,7 @@
 
 {{#if MONGO_ENABLED}}
 # MongoDB Persistence
-- descriptor: "pip-samples-beacons:persistence:mongodb:default:1.0"
+- descriptor: "beacons:persistence:mongodb:default:1.0"
   collection: {{MONGO_COLLECTION}}{{^MONGO_COLLECTION}}beacons{{/MONGO_COLLECTION}}
   connection:
     uri: {{MONGO_SERVICE_URI}}
@@ -28,33 +28,11 @@
 
 {{^MOCK_ENABLED}}{{^MONGO_ENABLED}}
 # Default in-memory persistence
-- descriptor: "pip-samples-beacons:persistence:memory:default:1.0"
+- descriptor: "beacons:persistence:memory:default:1.0"
 {{/MONGO_ENABLED}}{{/MOCK_ENABLED}}
 
 # Default controller
-- descriptor: "pip-samples-beacons:controller:default:default:1.0"
-
-# HTTP endpoint version 1.0
-- descriptor: "pip-samples-beacons:service:http:default:1.0"
-
-# Heartbeat service
-- descriptor: "pip-services:heartbeat-service:http:default:1.0"
-  route: ping
-
-# Status service
-- descriptor: "pip-services:status-service:http:default:1.0"
-  route: status
-
-# Prometheus accounts service
-#- descriptor: "pip-services:metrics-service:prometheus:default:1.0"
-
-
-# HTTP service version 1.0
-- descriptor: "pip-samples-beacons:service:http:default:1.0"
-  connection:
-    protocol: "http"
-    host: "0.0.0.0"
-    port: 8080
+- descriptor: "beacons:controller:default:default:1.0"
 
 # Common HTTP endpoint
 - descriptor: "pip-services:endpoint:http:default:1.0"
@@ -62,3 +40,17 @@
     protocol: "http"
     host: "0.0.0.0"
     port: {{{HTTP_PORT}}}{{^HTTP_PORT}}8080{{/HTTP_PORT}}
+
+# HTTP service version 1.0
+- descriptor: "beacons:service:http:default:1.0"
+
+# Heartbeat service
+- descriptor: "pip-services:heartbeat-service:http:default:1.0"
+  route: heartbeat
+
+# Status service
+- descriptor: "pip-services:status-service:http:default:1.0"
+  route: status
+
+# Prometheus accounts service
+#- descriptor: "pip-services:metrics-service:prometheus:default:1.0"

@@ -1,5 +1,5 @@
 # Build stage
-FROM microsoft/aspnetcore-build:2 AS build
+FROM microsoft/dotnet:2.1-sdk AS build
 
 # set working directory
 WORKDIR /app
@@ -13,15 +13,22 @@ COPY src/Client/Client.csproj ./src/Client/
 RUN dotnet restore src/Client/Client.csproj
 COPY src/Process/Process.csproj ./src/Process/
 RUN dotnet restore src/Process/Process.csproj
+COPY test/Service.Test/Service.Test.csproj ./test/Service.Test/
+RUN dotnet restore test/Service.Test/Service.Test.csproj
+COPY test/Client.Test/Client.Test.csproj ./test/Client.Test/
+RUN dotnet restore test/Client.Test/Client.Test.csproj
 
-# Copy Source
+# Copy src
 COPY . .
+
+# Test
+#RUN dotnet test tests/Service.Test/Service.Test.csproj
 
 # Publish
 RUN dotnet publish src/Process/Process.csproj -o /obj
 
 # Runtime stage
-FROM microsoft/aspnetcore:2
+FROM microsoft/dotnet:2.1-runtime
 
 # set working directory
 WORKDIR /app
@@ -32,11 +39,11 @@ COPY --from=build /obj ./bin
 # Copy configuration
 COPY config/*.* ./config/
 
-ENV MONGO_ENABLED "true"
-ENV MONGO_SERVICE_URI "mongodb://mongo:27017/beacons"
-ENV MONGO_COLLECTION "beacons"
-#ENV ELASTIC_SEARCH_SERVICE_URI "http://elasticsearch-logging:9200"
+ENV MONGO_SERVICE_URI ""
+ENV MONGO_SERVICE_HOST mongo
+ENV MONGO_SERVICE_PORT 27017
+ENV MONGO_DB app
 
 EXPOSE 8080
 
-CMD ["dotnet", "./bin/Process.dll", "-c", "./config/config.yml"]
+CMD ["dotnet", "./bin/run.dll", "-c", "./config/config.yml"]

@@ -1,5 +1,5 @@
 # Build stage
-FROM microsoft/aspnetcore-build:2 AS build
+FROM microsoft/dotnet:2.1-sdk AS build
 
 # set working directory
 WORKDIR /app
@@ -22,4 +22,5 @@ RUN dotnet restore test/Client.Test/Client.Test.csproj
 COPY . .
 
 # Test
-ENV TEAMCITY_PROJECT_NAME=fake
+##RUN dotnet test test/Service.Test/Service.Test.csproj \
+##    && dotnet test test/Client.Test/Client.Test.csproj

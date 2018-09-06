@@ -1,14 +1,44 @@
-﻿using Service.Persistence;
+﻿using Beacons.Data.Version1;
 using PipServices.Commons.Data;
 using System;
 using System.Threading.Tasks;
-using Test.Interface.Data.Version1;
 using Xunit;
 
-namespace Test.Persistence
+namespace Beacons.Persistence
 {
     public class BeaconsPersistenceFixture
     {
+        private BeaconV1 BEACON1 = new BeaconV1
+        {
+            Id = "1",
+            Udi = "00001",
+            Type = BeaconTypeV1.AltBeacon,
+            SiteId = "1",
+            Label = "TestBeacon1",
+            Center = new CenterObjectV1 { Type = "Point", Coordinates = new double[] { 0, 0 } },
+            Radius = 50
+        };
+        private BeaconV1 BEACON2 = new BeaconV1
+        {
+            Id = "2",
+            Udi = "00002",
+            Type = BeaconTypeV1.iBeacon,
+            SiteId = "1",
+            Label = "TestBeacon2",
+            Center = new CenterObjectV1 { Type = "Point", Coordinates = new double[] { 2, 2 } },
+            Radius = 70
+        };
+        private BeaconV1 BEACON3 = new BeaconV1
+        {
+            Id = "3",
+            Udi = "00003",
+            Type = BeaconTypeV1.AltBeacon,
+            SiteId = "2",
+            Label = "TestBeacon3",
+            Center = new CenterObjectV1 { Type = "Point", Coordinates = new double[] { 10, 10 } },
+            Radius = 50
+        };
+
         private IBeaconsPersistence _persistence;
 
         public BeaconsPersistenceFixture(IBeaconsPersistence persistence)
@@ -16,73 +46,131 @@ namespace Test.Persistence
             _persistence = persistence;
         }
 
-        public async Task TestCreateBeacon()
+        private async Task TestCreateBeaconsAsync()
         {
+            // Create the first beacon
+            var beacon = await _persistence.CreateAsync(null, BEACON1);
 
-            var beacon = TestModel.CreateBeacon();
+            Assert.NotNull(beacon);
+            Assert.Equal(BEACON1.Udi, beacon.Udi);
+            Assert.Equal(BEACON1.SiteId, beacon.SiteId);
+            Assert.Equal(BEACON1.Type, beacon.Type);
+            Assert.Equal(BEACON1.Label, beacon.Label);
+            Assert.NotNull(beacon.Center);
 
-            var result = await _persistence.CreateAsync(null, beacon);
+            // Create the second beacon
+            beacon = await _persistence.CreateAsync(null, BEACON2);
+ 
+            Assert.NotNull(beacon);
+            Assert.Equal(BEACON2.Udi, beacon.Udi);
+            Assert.Equal(BEACON2.SiteId, beacon.SiteId);
+            Assert.Equal(BEACON2.Type, beacon.Type);
+            Assert.Equal(BEACON2.Label, beacon.Label);
+            Assert.NotNull(beacon.Center);
 
-            TestModel.AssertEqual(beacon, result);
+            // Create the third beacon
+            beacon = await _persistence.CreateAsync(null, BEACON3);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(BEACON3.Udi, beacon.Udi);
+            Assert.Equal(BEACON3.SiteId, beacon.SiteId);
+            Assert.Equal(BEACON3.Type, beacon.Type);
+            Assert.Equal(BEACON3.Label, beacon.Label);
+            Assert.NotNull(beacon.Center);
         }
 
-        public async Task TestUpdateBeacon()
+        public async Task TestCrudOperationsAsync()
         {
+            // Create items
+            await TestCreateBeaconsAsync();
 
-            var beacon = await _persistence.CreateAsync(null, TestModel.CreateBeacon());
-
-            beacon.Label = "Update Label";
-            beacon.Type = "Update Type";
-
-            var result = await _persistence.UpdateAsync(null, beacon);
-
-            TestModel.AssertEqual(beacon, result);
-        }
-
-        public async Task TestDeleteBeacon()
-        {
-            var beacon = await _persistence.CreateAsync(null, TestModel.CreateBeacon());
-
-            var deletedBeacon = await _persistence.DeleteByIdAsync(null, beacon.Id);
-            var result = await _persistence.GetOneByIdAsync(null, beacon.Id);
-
-            TestModel.AssertEqual(beacon, deletedBeacon);
-            Assert.Null(result);
-        }
-
-        public async Task TestGetBeaconById()
-        {
-            var beacon = await _persistence.CreateAsync(null, TestModel.CreateBeacon());
-
-            var result = await _persistence.GetOneByIdAsync(null, beacon.Id);
-
-            TestModel.AssertEqual(beacon, result);
-        }
-
-        public async Task TestGetBeaconByUdi()
-        {
-            var beacon = await _persistence.CreateAsync(null, TestModel.CreateBeacon());
-
-            var result = await _persistence.GetOneByIdAsync(null, beacon.Udi);
-
-            TestModel.AssertEqual(beacon, result);
-        }
-
-        public async Task TestGetBeaconsByFilter()
-        {
-            var beacon1 = await _persistence.CreateAsync(null, TestModel.CreateBeacon());
-            var beacon2 = await _persistence.CreateAsync(null, TestModel.CreateBeacon());
-   
-            var filter = FilterParams.FromTuples(
-                "site_id", $"{String.Join(",", beacon2.SiteId)}",
-                "udi", beacon1.Udi
+            // Get all beacons
+            var page = await _persistence.GetPageByFilterAsync(
+                null,
+                new FilterParams(),
+                new PagingParams()
             );
 
-            var result = await _persistence.GetPageByFilterAsync(null, filter, null);
+            Assert.NotNull(page);
+            Assert.Equal(3, page.Data.Count);
 
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Data.Count);
-            TestModel.AssertEqual(beacon1, result.Data[0]);
+            var beacon1 = page.Data[0];
+
+            // Update the beacon
+            beacon1.Label = "ABC";
+
+            var beacon = await _persistence.UpdateAsync(null, beacon1);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(beacon1.Id, beacon.Id);
+            Assert.Equal("ABC", beacon.Label);
+
+            // Get beacon by udi
+            beacon = await _persistence.GetOneByUdiAsync(null, beacon1.Udi);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(beacon1.Id, beacon.Id);
+
+            // Delete the beacon
+            beacon = await _persistence.DeleteByIdAsync(null, beacon1.Id);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(beacon1.Id, beacon.Id);
+
+            // Try to get deleted beacon
+            beacon = await _persistence.GetOneByIdAsync(null, beacon1.Id);
+
+            Assert.Null(beacon);
+        }
+
+        public async Task TestGetWithFiltersAsync()
+        {
+            // Create items
+            await TestCreateBeaconsAsync();
+
+            // Filter by id
+            var page = await _persistence.GetPageByFilterAsync(
+                null,
+                FilterParams.FromTuples(
+                    "id", "1"
+                ),
+                new PagingParams()
+            );
+
+            Assert.Single(page.Data);
+
+            // Filter by udi
+            page = await _persistence.GetPageByFilterAsync(
+                null,
+                FilterParams.FromTuples(
+                    "udi", "00002"
+                ),
+                new PagingParams()
+            );
+
+            Assert.Single(page.Data);
+
+            // Filter by udis
+            page = await _persistence.GetPageByFilterAsync(
+                null,
+                FilterParams.FromTuples(
+                    "udis", "00001,00003"
+                ),
+                new PagingParams()
+            );
+
+            Assert.Equal(2, page.Data.Count);
+
+            // Filter by site_id
+            page = await _persistence.GetPageByFilterAsync(
+                null,
+                FilterParams.FromTuples(
+                    "site_id", "1"
+                ),
+                new PagingParams()
+            );
+
+            Assert.Equal(2, page.Data.Count);
         }
     }
 }

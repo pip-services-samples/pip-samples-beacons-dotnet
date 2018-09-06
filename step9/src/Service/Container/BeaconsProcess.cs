@@ -1,10 +1,10 @@
-﻿using Service.Build;
+﻿using Beacons.Build;
 using PipServices.Container;
 using PipServices.Rpc.Build;
 
-namespace Service.Container
+namespace Beacons.Container
 {
-    public class BeaconsProcess: ProcessContainer
+    public class BeaconsProcess : ProcessContainer
     {
         public BeaconsProcess()
             : base("beacons", "Beacons microservice")

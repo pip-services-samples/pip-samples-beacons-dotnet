@@ -2,106 +2,71 @@
 using PipServices.Commons.Config;
 using PipServices.Commons.Data;
 using PipServices.Commons.Refer;
-using Service.Persistence;
+using Beacons.Persistence;
 using System.Threading.Tasks;
-using PipServices.Components.Logic;
-using Interface.Data.Version1;
-using Interface.Logic;
+using Beacons.Data.Version1;
+using Beacons.Logic;
 
-namespace Service.Logic
+namespace Beacons.Logic
 {
-    public class BeaconsController: AbstractController, ICommandable, IBeaconsController
+    public class BeaconsController : IBeaconsController, IConfigurable, IReferenceable, ICommandable
     {
-        private IBeaconsPersistence _Persistence;
-        private BeaconsCommandSet _CommandSet;
-
-
-        public override string Component { get { return "pip-samples-beacons"; } }
+        private IBeaconsPersistence _persistence;
+        private BeaconsCommandSet _commandSet;
 
         public BeaconsController()
-        {
-            _dependencyResolver = new DependencyResolver(ConfigParams.FromTuples("dependencies.persistence", "pip-samples-beacons:persistence:*:*:1.0"));
-        }
+        {}
 
-        public override void SetReferences(IReferences references)
-        {
-            _dependencyResolver.SetReferences(references);
+        public void Configure(ConfigParams config)
+        {}
 
-            _Persistence = _dependencyResolver.GetOneRequired<IBeaconsPersistence>("persistence");
+        public void SetReferences(IReferences references)
+        {
+            _persistence = references.GetOneRequired<IBeaconsPersistence>(
+                new Descriptor("beacons", "persistence", "*", "*", "1.0")
+            );
         }
 
         public CommandSet GetCommandSet()
         {
-            return _CommandSet ?? (_CommandSet = new BeaconsCommandSet(this));
+            if (_commandSet == null)
+                _commandSet = new BeaconsCommandSet(this);
+            return _commandSet;
         }
 
-        public async Task<BeaconV1> CreateAsync(string correlationId, BeaconV1 beacon)
+        public async Task<DataPage<BeaconV1>> GetBeaconsAsync(string correlationId, FilterParams filter, PagingParams paging)
         {
-            return await SafeInvokeAsync(correlationId, "CreateAsync", () =>
-            {
-                return _Persistence.CreateAsync(correlationId, beacon);
-            });
+            return await _persistence.GetPageByFilterAsync(correlationId, filter, paging);
         }
 
-        public async Task<BeaconV1> UpdateAsync(string correlationId, BeaconV1 beacon)
+        public async Task<BeaconV1> GetBeaconByIdAsync(string correlationId, string id)
         {
-            return await SafeInvokeAsync(correlationId, "UpdateAsync", () =>
-            {
-                return _Persistence.UpdateAsync(correlationId, beacon);
-            });
+            return await _persistence.GetOneByIdAsync(correlationId, id);
         }
 
-        public async Task<BeaconV1> DeleteByIdAsync(string correlationId, string id)
+        public async Task<BeaconV1> GetBeaconByUdiAsync(string correlationId, string udi)
         {
-            return await SafeInvokeAsync(correlationId, "DeleteAsync", () =>
-            {
-                return _Persistence.DeleteByIdAsync(correlationId, id);
-            });
+            return await _persistence.GetOneByUdiAsync(correlationId, udi);
         }
 
-        public async Task<BeaconV1> GetOneByIdAsync(string correlationId, string id)
+        public async Task<CenterObjectV1> CalculatePositionAsync(string correlationId, string siteId, string[] udis)
         {
-            return await SafeInvokeAsync(correlationId, "GetOneByIdAsync", () =>
-            {
-                return _Persistence.GetOneByIdAsync(correlationId, id);
-            });
-        }
+            if (udis == null || udis.Length == 0) return null;
 
-        public async Task<DataPage<BeaconV1>> GetPageByFilterAsync(string correlationId, FilterParams filter, PagingParams paging)
-        {
-            return await SafeInvokeAsync(correlationId, "GetPageByFilterAsync", () =>
-            {
-                return _Persistence.GetPageByFilterAsync(correlationId, filter, paging);
-            });
-        }
-
-        public async Task<BeaconV1> GetOneByUdiAsync(string correlationId, string udi)
-        {
-            return await SafeInvokeAsync(correlationId, "GetOneByUdiAsync", () =>
-            {
-                return _Persistence.GetOneByUdiAsync(correlationId, udi);
-            });
-        }
-
-        public async Task<CenterObject> CalculatePosition(string correlationId, string siteId, string[] udis)
-        {
-            BeaconV1[] beacons;
-            CenterObject position = null;
-
-            if (udis == null || udis.Length == 0)
-            {
-                return null;
-            }
-
-            var result = await this._Persistence.GetPageByFilterAsync(correlationId, FilterParams.FromTuples("site_id", siteId, "udis", udis), null);
-            beacons = result.Data.ToArray();
-            var lat = 0;
-            var lng = 0;
+            var page = await this._persistence.GetPageByFilterAsync(
+                correlationId,
+                FilterParams.FromTuples("site_id", siteId, "udis", udis),
+                null
+            );
+ 
+            var lat = 0.0;
+            var lng = 0.0;
             var count = 0;
 
-            foreach (var beacon in beacons)
+            foreach (var beacon in page.Data)
             {
-                if (beacon.Center != null && beacon.Center.GetType().ToString() == "Point"
+                if (beacon.Center != null
+                    && beacon.Center.Type == "Point"
                     && beacon.Center.Coordinates.Length > 1)
                 {
                     lng += beacon.Center.Coordinates[0];
@@ -109,11 +74,37 @@ namespace Service.Logic
                     count += 1;
                 }
             }
+
             if (count > 0)
             {
-                position = new CenterObject("Point", new int[] { lng / count, lat / count });
+                return new CenterObjectV1
+                {
+                    Type = "Point",
+                    Coordinates = new double[] { lng / count, lat / count }
+                };
             }
-            return position;
+
+            return null;
+        }
+
+        public async Task<BeaconV1> CreateBeaconAsync(string correlationId, BeaconV1 beacon)
+        {
+            beacon.Id = beacon.Id ?? IdGenerator.NextLong();
+            beacon.Type = beacon.Type ?? BeaconTypeV1.Unknown;
+
+            return await _persistence.CreateAsync(correlationId, beacon);
+        }
+
+        public async Task<BeaconV1> UpdateBeaconAsync(string correlationId, BeaconV1 beacon)
+        {
+            beacon.Type = beacon.Type ?? BeaconTypeV1.Unknown;
+
+            return await _persistence.UpdateAsync(correlationId, beacon);
+        }
+
+        public async Task<BeaconV1> DeleteBeaconByIdAsync(string correlationId, string id)
+        {
+            return await _persistence.DeleteByIdAsync(correlationId, id);
         }
     }
 }

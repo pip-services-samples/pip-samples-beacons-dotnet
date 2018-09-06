@@ -1,4 +1,4 @@
-﻿using Service.Container;
+﻿using Beacons.Container;
 using System;
 
 namespace Process

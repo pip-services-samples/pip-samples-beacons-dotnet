@@ -1,100 +1,68 @@
-﻿using MongoDB.Driver;
+﻿using System.Threading.Tasks;
+using Beacons.Data.Version1;
+using MongoDB.Driver;
 using PipServices.Commons.Data;
-using System.Threading.Tasks;
 using PipServices.MongoDb.Persistence;
-using AutoMapper;
-using Interface.Data.Version1;
 
-namespace Service.Persistence
+namespace Beacons.Persistence
 {
-    public class BeaconsMongoDbPersistence: IdentifiableMongoDbPersistence<BeaconsMongoDbSchema, string>, IBeaconsPersistence
+    public class BeaconsMongoDbPersistence : IdentifiableMongoDbPersistence<BeaconV1, string>, IBeaconsPersistence
     {
-        public BeaconsMongoDbPersistence() : base("beacons") { }
+        public BeaconsMongoDbPersistence()
+            : base("beacons")
+        { }
 
-        private BeaconV1 ToPublic(BeaconsMongoDbSchema val)
-        {
-            if (val == null)
-            {
-                return null;
-            }
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<BeaconsMongoDbSchema, BeaconV1>());
-            var mapper = config.CreateMapper();
-            BeaconV1 result = mapper.Map<BeaconV1>(val);
-            return result;
-        }
-
-        private static BeaconsMongoDbSchema FromPublic(BeaconV1 val)
-        {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<BeaconV1, BeaconsMongoDbSchema>());
-            var mapper = config.CreateMapper();
-            BeaconsMongoDbSchema result = mapper.Map<BeaconsMongoDbSchema>(val);
-            return result;
-        }
-
-        public async Task<BeaconV1> GetOneByUdiAsync(string correlationId, string udi)
-        {
-            return await GetOneByUdiAsync(correlationId, udi);
-        }
-
-        public async Task<DataPage<BeaconV1>> GetPageByFilterAsync(string correlationId, FilterParams filter, PagingParams paging)
-        {
-            var result = await GetPageByFilterAsync(correlationId, ComposeFilter(filter), paging);
-            var data = result.Data.ConvertAll<BeaconV1>(x => ToPublic(x));
-
-            return new DataPage<BeaconV1>()
-            {
-                Data = data,
-                Total = data.Count
-            };
-        }
-
-        public async Task<BeaconV1> GetOneByIdAsync(string correlationId, string id)
-        {
-            return await GetOneByIdAsync(correlationId, id);
-        }
-
-        public async Task<BeaconV1> CreateAsync(string correlationId, BeaconV1 beacon)
-        {
-            var result = await CreateAsync(correlationId, FromPublic(beacon));
-
-            return ToPublic(result);
-        }
-
-        public async Task<BeaconV1> UpdateAsync(string correlationId, BeaconV1 beacon)
-        {
-            var result = await UpdateAsync(correlationId, FromPublic(beacon));
-
-            return ToPublic(result);
-        }
-
-        public async Task<BeaconV1> DeleteByIdAsync(string correlationId, string id)
-        {
-            var result = await DeleteByIdAsync(correlationId, id);
-
-            return result;
-        }
-
-        private FilterDefinition<BeaconsMongoDbSchema> ComposeFilter(FilterParams filterParams)
+        private new FilterDefinition<BeaconV1> ComposeFilter(FilterParams filterParams)
         {
             filterParams = filterParams ?? new FilterParams();
 
-            var builder = Builders<BeaconsMongoDbSchema>.Filter;
+            var builder = Builders<BeaconV1>.Filter;
             var filter = builder.Empty;
 
-            foreach (var filterKey in filterParams.Keys)
-            {
-                if (filterKey.Equals("udi"))
-                {
-                    filter &= builder.In(s => s.Id, filterParams.GetAsArray("udi"));
-                    continue;
-                }
+            var id = filterParams.GetAsNullableString("id");
+            if (!string.IsNullOrEmpty(id))
+                filter &= builder.Eq(b => b.Id, id);
+            
+            var siteId = filterParams.GetAsNullableString("site_id");
+            if (!string.IsNullOrEmpty(siteId))
+                filter &= builder.Eq(b => b.SiteId, siteId);
+            
+            var label = filterParams.GetAsNullableString("label");
+            if (!string.IsNullOrEmpty(label))
+                filter &= builder.Eq(b => b.Label, label);
+            
+            var udi = filterParams.GetAsNullableString("udi");
+            if (!string.IsNullOrEmpty(udi))
+                filter &= builder.Eq(b => b.Udi, udi);
 
-                filter &= builder.Eq(filterKey, filterParams[filterKey]);
-            }
+            var udis = filterParams.GetAsNullableString("udis");
+            var udiList = !string.IsNullOrEmpty(udis) ? udis.Split(',') : null;
+            if (udiList != null)
+                filter &= builder.In(b => b.Udi, udiList);
 
             return filter;
         }
 
+        public async Task<DataPage<BeaconV1>> GetPageByFilterAsync(
+            string correlationId, FilterParams filter, PagingParams paging)
+        {
+            return await GetPageByFilterAsync(correlationId, ComposeFilter(filter), paging);
+        }
+
+        public async Task<BeaconV1> GetOneByUdiAsync(string correlationId, string udi)
+        {
+            var builder = Builders<BeaconV1>.Filter;
+            var filter = builder.Eq(x => x.Udi, udi);
+            var result = await _collection.Find(filter).FirstOrDefaultAsync();
+
+            if (result != null)
+                _logger.Trace(correlationId, "Retrieved from {0} with udi = {1}", _collectionName, udi);
+            else
+                _logger.Trace(correlationId, "Nothing found from {0} with udi = {1}", _collectionName, udi);
+
+            return result;
+
+        }
     }
 }
 

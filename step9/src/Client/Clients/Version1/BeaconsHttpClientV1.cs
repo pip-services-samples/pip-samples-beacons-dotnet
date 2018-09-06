@@ -1,43 +1,17 @@
-﻿using PipServices.Commons.Data;
-using System.Dynamic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Beacons.Data.Version1;
+using PipServices.Commons.Data;
 using PipServices.Rpc.Clients;
-using Interface.Data.Version1;
 
-namespace Client.Clients.Version1
+namespace Beacons.Clients.Version1
 {
-    public class BeaconsHttpClientV1: CommandableHttpClient, IBeaconsClientV1
+    public class BeaconsHttpClientV1 : CommandableHttpClient, IBeaconsClientV1
     {
         public BeaconsHttpClientV1()
             : base("v1/beacons")
-        {
-        }
+        {}
 
-        public async Task<BeaconV1> CreateAsync(string correlationId, BeaconV1 beacon)
-        {
-            return await CallCommandAsync<BeaconV1>(
-                "create_beacon",
-                correlationId,
-                new
-                {
-                    beacon = beacon
-                }
-            );
-        }
-
-        public async Task<BeaconV1> DeleteByIdAsync(string correlationId, string id)
-        {
-            return await CallCommandAsync<BeaconV1>(
-                "delete_beacon",
-                correlationId,
-                new
-                {
-                    id = id
-                }
-            );
-        }
-
-        public async Task<DataPage<BeaconV1>> GetPageByFilterAsync(string correlationId, FilterParams filter, PagingParams paging)
+        public async Task<DataPage<BeaconV1>> GetBeaconsAsync(string correlationId, FilterParams filter, PagingParams paging)
         {
             return await CallCommandAsync<DataPage<BeaconV1>>(
                 "get_beacons",
@@ -50,19 +24,19 @@ namespace Client.Clients.Version1
             );
         }
 
-        public async Task<BeaconV1> GetOneByIdAsync(string correlationId, string id)
+        public async Task<BeaconV1> GetBeaconByIdAsync(string correlationId, string id)
         {
             return await CallCommandAsync<BeaconV1>(
-                "get_beacon",
+                "get_beacon_by_id",
                 correlationId,
                 new
                 {
-                    id = id
+                    beacon_id = id
                 }
             );
         }
 
-        public async Task<BeaconV1> GetOneByUdiAsync(string correlationId, string udi)
+        public async Task<BeaconV1> GetBeaconByUdiAsync(string correlationId, string udi)
         {
             return await CallCommandAsync<BeaconV1>(
                 "get_beacon_by_udi",
@@ -74,7 +48,32 @@ namespace Client.Clients.Version1
             );
         }
 
-        public async Task<BeaconV1> UpdateAsync(string correlationId, BeaconV1 beacon)
+        public async Task<CenterObjectV1> CalculatePositionAsync(string correlationId, string siteId, string[] udis)
+        {
+            return await CallCommandAsync<CenterObjectV1>(
+                "calculate_position",
+                correlationId,
+                new
+                {
+                    siteId = siteId,
+                    udis = udis
+                }
+            );
+        }
+
+        public async Task<BeaconV1> CreateBeaconAsync(string correlationId, BeaconV1 beacon)
+        {
+            return await CallCommandAsync<BeaconV1>(
+                "create_beacon",
+                correlationId,
+                new
+                {
+                    beacon = beacon
+                }
+            );
+        }
+
+        public async Task<BeaconV1> UpdateBeaconAsync(string correlationId, BeaconV1 beacon)
         {
             return await CallCommandAsync<BeaconV1>(
                 "update_beacon",
@@ -86,19 +85,17 @@ namespace Client.Clients.Version1
             );
         }
 
-        public async Task<ExpandoObject> CalculatePosition(string correlationId, string siteId, string[] udis)
+        public async Task<BeaconV1> DeleteBeaconByIdAsync(string correlationId, string id)
         {
-            return await CallCommandAsync<ExpandoObject>(
-                "calculate_position",
+            return await CallCommandAsync<BeaconV1>(
+                "delete_beacon_by_id",
                 correlationId,
                 new
                 {
-                    siteId = siteId,
-                    udis = udis
+                    beacon_id = id
                 }
             );
         }
-
 
     }
 }

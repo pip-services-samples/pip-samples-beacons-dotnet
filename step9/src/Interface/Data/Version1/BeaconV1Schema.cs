@@ -1,9 +1,9 @@
 ﻿using PipServices.Commons.Validate;
 using System;
 
-namespace Interface.Data.Version1
+namespace Beacons.Data.Version1
 {
-    public class BeaconV1Schema: ObjectSchema
+    public class BeaconV1Schema : ObjectSchema
     {
         public BeaconV1Schema()
         {

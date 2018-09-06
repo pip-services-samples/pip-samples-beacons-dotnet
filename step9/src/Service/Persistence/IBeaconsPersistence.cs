@@ -1,16 +1,16 @@
 ﻿using System.Threading.Tasks;
 using PipServices.Commons.Data;
-using Interface.Data.Version1;
+using Beacons.Data.Version1;
 
-namespace Service.Persistence
+namespace Beacons.Persistence
 {
     public interface IBeaconsPersistence
     {
-        Task<DataPage<BeaconV1>> GetPageByFilterAsync(string CorrelationId, FilterParams Filter, PagingParams Paging);
-        Task<BeaconV1> GetOneByIdAsync(string CorrelationId, string Id);
-        Task<BeaconV1> GetOneByUdiAsync(string CorrelationId, string Udi);
-        Task<BeaconV1> CreateAsync(string CorrelationId, BeaconV1 Item);
-        Task<BeaconV1> UpdateAsync(string CorrelationId, BeaconV1 Item);
-        Task<BeaconV1> DeleteByIdAsync(string CorrelationId, string Id);
+        Task<DataPage<BeaconV1>> GetPageByFilterAsync(string correlationId, FilterParams filter, PagingParams paging);
+        Task<BeaconV1> GetOneByIdAsync(string correlationId, string id);
+        Task<BeaconV1> GetOneByUdiAsync(string correlationId, string udi);
+        Task<BeaconV1> CreateAsync(string correlationId, BeaconV1 item);
+        Task<BeaconV1> UpdateAsync(string correlationId, BeaconV1 item);
+        Task<BeaconV1> DeleteByIdAsync(string correlationId, string id);
     }
 }

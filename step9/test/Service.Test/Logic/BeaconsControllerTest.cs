@@ -1,89 +1,169 @@
-﻿using System.Collections.Generic;
-using PipServices.Commons.Refer;
+﻿using PipServices.Commons.Refer;
 using Xunit;
 using PipServices.Commons.Data;
 using PipServices.Commons.Config;
-using Service.Persistence;
-using Service.Logic;
-using Test.Interface.Data.Version1;
-using Interface.Data.Version1;
+using Beacons.Persistence;
+using Beacons.Data.Version1;
+using System;
+using System.Threading.Tasks;
 
-namespace Test.Logic
+namespace Beacons.Logic
 {
-    public class BeaconsControllerTest
+    public class BeaconsControllerTest: IDisposable
     {
-        private BeaconsController _controller;
+        private BeaconV1 BEACON1 = new BeaconV1
+        {
+            Id = "1",
+            Udi = "00001",
+            Type = BeaconTypeV1.AltBeacon,
+            SiteId = "1",
+            Label = "TestBeacon1",
+            Center = new CenterObjectV1 { Type = "Point", Coordinates = new double[] { 0, 0 } },
+            Radius = 50
+        };
+        private BeaconV1 BEACON2 = new BeaconV1
+        {
+            Id = "2",
+            Udi = "00002",
+            Type = BeaconTypeV1.iBeacon,
+            SiteId = "1",
+            Label = "TestBeacon2",
+            Center = new CenterObjectV1 { Type = "Point", Coordinates = new double[] { 2, 2 } },
+            Radius = 70
+        };
 
+        private BeaconsController _controller;
         private BeaconsMemoryPersistence _persistence;
 
         public BeaconsControllerTest()
         {
-            var references = new References();
-            _controller = new BeaconsController();
-
             _persistence = new BeaconsMemoryPersistence();
             _persistence.Configure(new ConfigParams());
 
-            references.Put(new Descriptor("pip-samples-beacons", "persistence", "memory", "*", "1.0"), _persistence);
-            references.Put(new Descriptor("pip-samples-beacons", "controller", "default", "*", "1.0"), _controller);
+            _controller = new BeaconsController();
+
+            var references = References.FromTuples(
+                new Descriptor("beacons", "persistence", "memory", "*", "1.0"), _persistence,
+                new Descriptor("beacons", "controller", "default", "*", "1.0"), _controller
+            );
 
             _controller.SetReferences(references);
+
+            _persistence.OpenAsync(null).Wait();
+        }
+
+        public void Dispose()
+        {
+            _persistence.CloseAsync(null).Wait();
         }
 
         [Fact]
-        public async void It_Should_Create_Task_Async()
+        public async Task TestCrudOperationsAsync()
         {
-            var beacon = TestModel.CreateBeacon();
+            // Create the first beacon
+            var beacon = await _controller.CreateBeaconAsync(null, BEACON1);
 
-            var result = await _controller.CreateAsync(null, beacon);
+            Assert.NotNull(beacon);
+            Assert.Equal(BEACON1.Udi, beacon.Udi);
+            Assert.Equal(BEACON1.SiteId, beacon.SiteId);
+            Assert.Equal(BEACON1.Type, beacon.Type);
+            Assert.Equal(BEACON1.Label, beacon.Label);
+            Assert.NotNull(beacon.Center);
 
-            Assert.Equal(beacon.Id, result.Id);
+            // Create the second beacon
+            beacon = await _controller.CreateBeaconAsync(null, BEACON2);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(BEACON2.Udi, beacon.Udi);
+            Assert.Equal(BEACON2.SiteId, beacon.SiteId);
+            Assert.Equal(BEACON2.Type, beacon.Type);
+            Assert.Equal(BEACON2.Label, beacon.Label);
+            Assert.NotNull(beacon.Center);
+
+            // Get all beacons
+            var page = await _controller.GetBeaconsAsync(
+                null,
+                new FilterParams(),
+                new PagingParams()
+            );
+
+            Assert.NotNull(page);
+            Assert.Equal(2, page.Data.Count);
+
+            var beacon1 = page.Data[0];
+
+            // Update the beacon
+            beacon1.Label = "ABC";
+
+            beacon = await _controller.UpdateBeaconAsync(null, beacon1);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(beacon1.Id, beacon.Id);
+            Assert.Equal("ABC", beacon.Label);
+
+            // Get beacon by udi
+            beacon = await _controller.GetBeaconByUdiAsync(null, beacon1.Udi);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(beacon1.Id, beacon.Id);
+
+            // Delete the beacon
+            beacon = await _controller.DeleteBeaconByIdAsync(null, beacon1.Id);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(beacon1.Id, beacon.Id);
+
+            // Try to get deleted beacon
+            beacon = await _controller.GetBeaconByIdAsync(null, beacon1.Id);
+
+            Assert.Null(beacon);
         }
 
         [Fact]
-        public async void It_Should_Update_Task_Async()
+        public async Task TestCalculatePositionsAsync()
         {
-            var beacon = TestModel.CreateBeacon();
+            // Create the first beacon
+            var beacon = await _controller.CreateBeaconAsync(null, BEACON1);
 
-            var result = await _controller.UpdateAsync(null, beacon);
+            Assert.NotNull(beacon);
+            Assert.Equal(BEACON1.Udi, beacon.Udi);
+            Assert.Equal(BEACON1.SiteId, beacon.SiteId);
+            Assert.Equal(BEACON1.Type, beacon.Type);
+            Assert.Equal(BEACON1.Label, beacon.Label);
+            Assert.NotNull(beacon.Center);
 
-            Assert.Equal(beacon.Id, result.Id);
+            // Create the second beacon
+            beacon = await _controller.CreateBeaconAsync(null, BEACON2);
+
+            Assert.NotNull(beacon);
+            Assert.Equal(BEACON2.Udi, beacon.Udi);
+            Assert.Equal(BEACON2.SiteId, beacon.SiteId);
+            Assert.Equal(BEACON2.Type, beacon.Type);
+            Assert.Equal(BEACON2.Label, beacon.Label);
+            Assert.NotNull(beacon.Center);
+
+            // Calculate position for one beacon
+            var position = await _controller.CalculatePositionAsync(
+                null, "1", new string[] { "00001" }
+            );
+
+            Assert.NotNull(position);
+            Assert.Equal("Point", position.Type);
+            Assert.Equal(2, position.Coordinates.Length);
+            Assert.Equal(0, position.Coordinates[0]);
+            Assert.Equal(0, position.Coordinates[1]);
+
+            // Calculate position for two beacons
+            position = await _controller.CalculatePositionAsync(
+                null, "1", new string[] { "00001", "00002" }
+            );
+
+            Assert.NotNull(position);
+            Assert.Equal("Point", position.Type);
+            Assert.Equal(2, position.Coordinates.Length);
+            Assert.Equal(1, position.Coordinates[0]);
+            Assert.Equal(1, position.Coordinates[1]);
         }
 
-        [Fact]
-        public async void It_Should_Delete_Promotion_Async()
-        {
-            var beacon = TestModel.CreateBeacon();
-
-            var result = await _controller.DeleteByIdAsync(null, beacon.Id);
-
-            Assert.Equal(beacon.Id, result.Id);
-        }
-
-        [Fact]
-        public async void It_Should_Get_Task_Async()
-        {
-            var beacon = TestModel.CreateBeacon();
-
-            var result = await _controller.GetOneByIdAsync(null, beacon.Id);
-
-            Assert.Equal(beacon.Id, result.Id);
-        }
-
-        [Fact]
-        public async void It_Should_Get_Tasks_Async()
-        {
-            var beacons = new DataPage<BeaconV1>()
-            {
-                Data = new List<BeaconV1>() { TestModel.CreateBeacon(), TestModel.CreateBeacon(), TestModel.CreateBeacon() },
-                Total = 3
-            };
-            var filter = new FilterParams();
-            var paging = new PagingParams();
-
-            var result = await _controller.GetPageByFilterAsync(null, filter, paging);
-
-            Assert.Equal(beacons.Total, beacons.Total);
-        }
     }
 }

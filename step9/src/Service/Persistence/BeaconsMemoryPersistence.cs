@@ -1,109 +1,68 @@
-﻿using System.Collections.Generic;
-using PipServices.Commons.Data;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Beacons.Data.Version1;
+using PipServices.Commons.Data;
 using PipServices.Data.Persistence;
-using Interface.Data.Version1;
 
-namespace Service.Persistence
+namespace Beacons.Persistence
 {
     public class BeaconsMemoryPersistence : IdentifiableMemoryPersistence<BeaconV1, string>, IBeaconsPersistence
     {
-        private const int MaxPageSize = 100;
-        private object _lock = new object();
-        private Dictionary<string, BeaconV1> _beacons = new Dictionary<string, BeaconV1>();
-                
         public BeaconsMemoryPersistence()
         {
-             this._maxPageSize = 1000;
+            _maxPageSize = 1000;
         }
 
-        public async Task<BeaconV1> CreateAsync(string correlationId, BeaconV1 beacon)
+        private List<Func<BeaconV1, bool>> ComposeFilter(FilterParams filter)
         {
-            beacon.Id = beacon.Id ?? IdGenerator.NextLong();
+            filter = filter ?? new FilterParams();
 
-            lock (_lock)
-            {
-                _beacons[beacon.Id] = beacon;
-            }
-            return await Task.FromResult(beacon);
-        }
+            var id = filter.GetAsNullableString("id");
+            var siteId = filter.GetAsNullableString("site_id");
+            var label = filter.GetAsNullableString("label");
+            var udi = filter.GetAsNullableString("udi");
 
-        public async Task<BeaconV1> DeleteByIdAsync(string correlationId, string id)
-        {
-            BeaconV1 result = null;
+            var udis = filter.GetAsNullableString("udis");
+            var udiList = udis != null ? udis.Split(',') : null;
 
-            lock (_lock)
-            {
-                _beacons.TryGetValue(id, out result);
-                if (result != null)
+            return new List<Func<BeaconV1, bool>>() {
+                (item) =>
                 {
-                    _beacons.Remove(id);
+                    if (id != null && item.Id != id)
+                        return false;
+                    if (siteId != null && item.SiteId != siteId)
+                        return false;
+                    if (label != null && item.Label != label)
+                        return false;
+                    if (udi != null && item.Udi != udi)
+                        return false;
+                    if (udiList != null && !udiList.Contains(item.Udi))
+                        return false;
+                    return true;
                 }
-            }
-            return await Task.FromResult(result);
-        }
-
-        public async Task<BeaconV1> UpdateAsync(string correlationId, BeaconV1 beacon)
-        {
-            lock (_lock)
-            {
-                _beacons[beacon.Id] = beacon;
-            }
-
-            return await Task.FromResult(beacon);
+            };
         }
 
         public Task<DataPage<BeaconV1>> GetPageByFilterAsync(string correlationId, FilterParams filter, PagingParams paging)
         {
-            filter = filter ?? new FilterParams();
-            var site_id = filter.GetAsNullableString("site_id");
-
-            lock (_lock)
-            {
-                var foundBeacons = new List<BeaconV1>();
-
-                foreach (var beacon in _beacons.Values)
-                {
-                    if (site_id != null && !site_id.Contains(beacon.SiteId))
-                    {
-                        continue;
-                    }
-                    foundBeacons.Add(beacon);
-                }
-
-                paging = paging ?? new PagingParams();
-                var skip = paging.GetSkip(0);
-                var take = paging.GetTake(MaxPageSize);
-                var page = foundBeacons.Skip((int)skip).Take((int)take).ToList();
-                var total = foundBeacons.Count;
-
-                return Task.FromResult(new DataPage<BeaconV1>(page, total));
-            }
+            return base.GetPageByFilterAsync(correlationId, ComposeFilter(filter), paging);
         }
 
-        public async Task<BeaconV1> GetOneByIdAsync(string correlationId, string id)
+        public async Task<BeaconV1> GetOneByUdiAsync(string correlationId, string udi)
         {
-            BeaconV1 result = null;
+            BeaconV1 item = null;
 
             lock (_lock)
             {
-                _beacons.TryGetValue(id, out result);
+                item = _items.Find((beacon) => { return beacon.Udi == udi; });
             }
 
-            return await Task.FromResult(result);
-        }
+            if (item != null) _logger.Trace(correlationId, "Found beacon by {0}", udi);
+            else _logger.Trace(correlationId, "Cannot find beacon by {0}", udi);
 
-        public async Task<BeaconV1> GetOneByUdiAsync(string CorrelationId, string udi)
-        {
-            BeaconV1 result = null;
-
-            lock (_lock)
-            {
-                _beacons.TryGetValue(udi, out result);
-            }
-
-            return await Task.FromResult(result);
+            return await Task.FromResult(item);
         }
     }
 }

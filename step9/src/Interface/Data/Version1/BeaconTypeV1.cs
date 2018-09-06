@@ -1,11 +1,11 @@
 ﻿
-namespace Interface.Data.Version1
+namespace Beacons.Data.Version1
 {
-    public enum BeaconTypeV1
+    public class BeaconTypeV1
     {
-        Unknown, 
-        AltBeacon,
-        iBeacon,
-        EddyStoneUdi
+        public static string Unknown = "unkown";
+        public static string AltBeacon = "altbeacon";
+        public static string iBeacon = "ibeacon";
+        public static string EddyStoneUdi = "eddystone-udi";
     }
 }
