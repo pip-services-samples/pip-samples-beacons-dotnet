@@ -1,9 +1,9 @@
 ﻿using System;
 namespace Beacons.Persistence
 {
-    public class BeaconsMongoDbTest
+    public class BeaconsFilePersistence
     {
-        public BeaconsMongoDbTest()
+        public BeaconsFilePersistence()
         {
         }
     }

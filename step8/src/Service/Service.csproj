@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Beacons</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="PipServices.Components" Version="3.0.3" />
     <PackageReference Include="PipServices.Container" Version="3.0.1" />
     <PackageReference Include="PipServices.Data" Version="3.0.1" />
@@ -15,6 +15,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Interface\Interface.csproj" />
+    <ProjectReference Include="..\Client\Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="src\Interface\Data\Version1\BeaconTypeV1.cs" />
+    <Compile Remove="test\Service.Test\Interface\Data\Version1\TestModel.cs" />
+    <Compile Remove="Persistence\BeaconsMongoDbSchema.cs" />
+  </ItemGroup>
 </Project>
