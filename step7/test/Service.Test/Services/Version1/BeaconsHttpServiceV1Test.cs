@@ -139,7 +139,7 @@ namespace Beacons.Services.Version1
             using (var httpClient = new HttpClient())
             {
                 var requestValue = JsonConverter.ToJson(request);
-                using (var content = new StringContent(requestValue, Encoding.UTF32, "application/json"))
+                using (var content = new StringContent(requestValue, Encoding.UTF8, "application/json"))
                 {
                     var response = await httpClient.PostAsync("http://localhost:3000/v1/beacons/" + route, content);
                     var responseValue = response.Content.ReadAsStringAsync().Result;

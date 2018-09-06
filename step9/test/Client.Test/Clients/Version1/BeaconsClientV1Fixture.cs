@@ -94,6 +94,9 @@ namespace Beacons.Clients.Version1
             beacon = await _client.GetBeaconByIdAsync(null, beacon1.Id);
 
             Assert.Null(beacon);
+            
+            // Clean up for the second test
+            await _client.DeleteBeaconByIdAsync(null, BEACON2.Id);
         }
 
         public async Task TestCalculatePositionsAsync()
