@@ -1,7 +1,7 @@
-﻿using PipServices.Commons.Commands;
-using PipServices.Commons.Config;
-using PipServices.Commons.Data;
-using PipServices.Commons.Refer;
+﻿using PipServices3.Commons.Commands;
+using PipServices3.Commons.Config;
+using PipServices3.Commons.Data;
+using PipServices3.Commons.Refer;
 using Beacons.Persistence;
 using System.Threading.Tasks;
 using Beacons.Data.Version1;

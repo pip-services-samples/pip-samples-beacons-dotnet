@@ -1,5 +1,5 @@
 ﻿using Beacons.Data.Version1;
-using PipServices.Commons.Data;
+using PipServices3.Commons.Data;
 using System;
 using System.Threading.Tasks;
 using Xunit;

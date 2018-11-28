@@ -1,7 +1,7 @@
-﻿using PipServices.Commons.Commands;
-using PipServices.Commons.Config;
-using PipServices.Commons.Data;
-using PipServices.Commons.Refer;
+﻿using PipServices3.Commons.Commands;
+using PipServices3.Commons.Config;
+using PipServices3.Commons.Data;
+using PipServices3.Commons.Refer;
 using Beacons.Persistence;
 using System.Threading.Tasks;
 using Beacons.Data.Version1;
@@ -9,21 +9,29 @@ using Beacons.Logic;
 
 namespace Beacons.Logic
 {
-    public class BeaconsController : IBeaconsController, IConfigurable, IReferenceable
+    public class BeaconsController : IBeaconsController, IConfigurable, IReferenceable, ICommandable
     {
         private IBeaconsPersistence _persistence;
+        private BeaconsCommandSet _commandSet;
 
         public BeaconsController()
-        { }
+        {}
 
         public void Configure(ConfigParams config)
-        { }
+        {}
 
         public void SetReferences(IReferences references)
         {
             _persistence = references.GetOneRequired<IBeaconsPersistence>(
                 new Descriptor("beacons", "persistence", "*", "*", "1.0")
             );
+        }
+
+        public CommandSet GetCommandSet()
+        {
+            if (_commandSet == null)
+                _commandSet = new BeaconsCommandSet(this);
+            return _commandSet;
         }
 
         public async Task<DataPage<BeaconV1>> GetBeaconsAsync(string correlationId, FilterParams filter, PagingParams paging)
@@ -50,7 +58,7 @@ namespace Beacons.Logic
                 FilterParams.FromTuples("site_id", siteId, "udis", udis),
                 null
             );
-
+ 
             var lat = 0.0;
             var lng = 0.0;
             var count = 0;

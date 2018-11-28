@@ -22,8 +22,4 @@
     <ProjectReference Include="..\..\src\Interface\Interface.csproj" />
     <ProjectReference Include="..\..\src\Service\Service.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Services\Version1\BeaconsHttpServiceV1Test.cs" />
-    <Compile Remove="Logic\BeaconsControllerTest.cs" />
-  </ItemGroup>
 </Project>

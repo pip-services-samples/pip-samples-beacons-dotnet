@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using PipServices.Commons.Data;
+using PipServices3.Commons.Data;
 using Beacons.Data.Version1;
 
 namespace Beacons.Persistence

@@ -1,5 +1,5 @@
 ﻿using System.Runtime.Serialization;
-using PipServices.Commons.Data;
+using PipServices3.Commons.Data;
 
 namespace Beacons.Data.Version1
 {

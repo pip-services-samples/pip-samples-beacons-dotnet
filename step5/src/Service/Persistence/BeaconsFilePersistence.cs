@@ -1,6 +1,6 @@
 ﻿using Beacons.Data.Version1;
-using PipServices.Commons.Config;
-using PipServices.Data.Persistence;
+using PipServices3.Commons.Config;
+using PipServices3.Data.Persistence;
 
 namespace Beacons.Persistence
 {

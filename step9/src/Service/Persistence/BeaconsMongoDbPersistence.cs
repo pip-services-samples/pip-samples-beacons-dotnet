@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Beacons.Data.Version1;
 using MongoDB.Driver;
-using PipServices.Commons.Data;
-using PipServices.MongoDb.Persistence;
+using PipServices3.Commons.Data;
+using PipServices3.MongoDb.Persistence;
 
 namespace Beacons.Persistence
 {

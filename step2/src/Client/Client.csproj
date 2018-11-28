@@ -20,6 +20,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Clients\.DS_Store" />
+    <PackageReference Include="PipServices3.Rpc" Version="3.0.4" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Interface\Interface.csproj" />
+  </ItemGroup>
+
 </Project>

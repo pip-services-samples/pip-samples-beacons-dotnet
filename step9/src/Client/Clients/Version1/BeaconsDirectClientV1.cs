@@ -2,9 +2,9 @@
 using Beacons.Clients.Version1;
 using Beacons.Data.Version1;
 using Beacons.Logic;
-using PipServices.Commons.Data;
-using PipServices.Commons.Refer;
-using PipServices.Rpc.Clients;
+using PipServices3.Commons.Data;
+using PipServices3.Commons.Refer;
+using PipServices3.Rpc.Clients;
 
 namespace Beacons.Clients.Version1
 {

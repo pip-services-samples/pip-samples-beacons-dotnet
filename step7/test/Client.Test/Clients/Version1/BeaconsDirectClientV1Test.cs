@@ -1,5 +1,5 @@
-﻿using PipServices.Commons.Config;
-using PipServices.Commons.Refer;
+﻿using PipServices3.Commons.Config;
+using PipServices3.Commons.Refer;
 using System.Threading.Tasks;
 using Xunit;
 using Beacons.Persistence;

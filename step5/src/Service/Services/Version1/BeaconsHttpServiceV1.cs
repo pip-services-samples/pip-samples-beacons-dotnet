@@ -1,5 +1,5 @@
-﻿using PipServices.Commons.Refer;
-using PipServices.Rpc.Services;
+﻿using PipServices3.Commons.Refer;
+using PipServices3.Rpc.Services;
 
 namespace Beacons.Services.Version1
 {

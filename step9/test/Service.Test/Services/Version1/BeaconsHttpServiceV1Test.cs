@@ -1,7 +1,7 @@
-﻿using PipServices.Commons.Config;
-using PipServices.Commons.Convert;
-using PipServices.Commons.Data;
-using PipServices.Commons.Refer;
+﻿using PipServices3.Commons.Config;
+using PipServices3.Commons.Convert;
+using PipServices3.Commons.Data;
+using PipServices3.Commons.Refer;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;

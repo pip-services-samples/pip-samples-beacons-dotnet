@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using PipServices.Commons.Config;
-using PipServices.Commons.Convert;
+using PipServices3.Commons.Config;
+using PipServices3.Commons.Convert;
 using Xunit;
 
 namespace Beacons.Persistence

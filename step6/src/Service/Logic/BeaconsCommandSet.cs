@@ -1,8 +1,8 @@
 ﻿using Beacons.Data.Version1;
-using PipServices.Commons.Commands;
-using PipServices.Commons.Data;
-using PipServices.Commons.Convert;
-using PipServices.Commons.Validate;
+using PipServices3.Commons.Commands;
+using PipServices3.Commons.Data;
+using PipServices3.Commons.Convert;
+using PipServices3.Commons.Validate;
 using System.Collections.Generic;
 
 namespace Beacons.Logic

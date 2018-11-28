@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Beacons.Data.Version1;
-using PipServices.Commons.Data;
+using PipServices3.Commons.Data;
 
 namespace Beacons.Clients.Version1
 {

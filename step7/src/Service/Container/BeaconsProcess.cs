@@ -1,6 +1,6 @@
 ﻿using Beacons.Build;
-using PipServices.Container;
-using PipServices.Rpc.Build;
+using PipServices3.Container;
+using PipServices3.Rpc.Build;
 
 namespace Beacons.Container
 {

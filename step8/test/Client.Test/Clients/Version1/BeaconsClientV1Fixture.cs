@@ -1,5 +1,5 @@
 ﻿using Beacons.Data.Version1;
-using PipServices.Commons.Data;
+using PipServices3.Commons.Data;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -94,9 +94,9 @@ namespace Beacons.Clients.Version1
             beacon = await _client.GetBeaconByIdAsync(null, beacon1.Id);
 
             Assert.Null(beacon);
-
+            
             // Clean up for the second test
-            beacon = await _client.DeleteBeaconByIdAsync(null, BEACON2.Id);
+            await _client.DeleteBeaconByIdAsync(null, BEACON2.Id);
         }
 
         public async Task TestCalculatePositionsAsync()

@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PipServices.Rpc" Version="3.0.3" />
+    <PackageReference Include="PipServices3.Rpc" Version="3.0.4" />
   </ItemGroup>
 
   <ItemGroup>

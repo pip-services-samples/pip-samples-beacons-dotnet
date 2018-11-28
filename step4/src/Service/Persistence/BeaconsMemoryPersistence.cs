@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Beacons.Data.Version1;
-using PipServices.Commons.Data;
-using PipServices.Data.Persistence;
+using PipServices3.Commons.Data;
+using PipServices3.Data.Persistence;
 
 namespace Beacons.Persistence
 {

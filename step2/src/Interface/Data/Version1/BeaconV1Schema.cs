@@ -1,5 +1,5 @@
-﻿using PipServices.Commons.Convert;
-using PipServices.Commons.Validate;
+﻿using PipServices3.Commons.Convert;
+using PipServices3.Commons.Validate;
 
 namespace Beacons.Data.Version1
 {

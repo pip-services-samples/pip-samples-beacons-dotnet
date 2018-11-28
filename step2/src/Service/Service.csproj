@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PipServices.Container" Version="3.0.1" />
-    <PackageReference Include="PipServices.Data" Version="3.0.1" />
-    <PackageReference Include="PipServices.Rpc" Version="3.0.3" />
-    <PackageReference Include="PipServices.Commons" Version="3.0.4" />
-    <PackageReference Include="PipServices.Components" Version="3.0.3" />
-    <PackageReference Include="PipServices.MongoDb" Version="3.0.2" />
+    <PackageReference Include="PipServices3.Commons" Version="3.0.6" />
+    <PackageReference Include="PipServices3.Components" Version="3.0.4" />
+    <PackageReference Include="PipServices3.Container" Version="3.0.3" />
+    <PackageReference Include="PipServices3.Data" Version="3.0.2" />
+    <PackageReference Include="PipServices3.MongoDb" Version="3.0.4" />
+    <PackageReference Include="PipServices3.Rpc" Version="3.0.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,11 +24,5 @@
     <Compile Remove="src\Interface\Data\Version1\BeaconTypeV1.cs" />
     <Compile Remove="test\Service.Test\Interface\Data\Version1\TestModel.cs" />
     <Compile Remove="Persistence\BeaconsMongoDbSchema.cs" />
-    <Compile Remove="Build\BeaconsClientFactory.cs" />
-    <Compile Remove="Container\BeaconsProcess.cs" />
-    <Compile Remove="Persistence\BeaconsFilePersistence.cs" />
-    <Compile Remove="Persistence\BeaconsMemoryPersistence.cs" />
-    <Compile Remove="Persistence\BeaconsMongoDbPersistence.cs" />
-    <Compile Remove="Persistence\IBeaconsPersistence.cs" />
   </ItemGroup>
 </Project>

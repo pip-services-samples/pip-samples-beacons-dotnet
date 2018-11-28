@@ -1,7 +1,7 @@
-﻿using PipServices.Commons.Refer;
+﻿using PipServices3.Commons.Refer;
 using Xunit;
-using PipServices.Commons.Data;
-using PipServices.Commons.Config;
+using PipServices3.Commons.Data;
+using PipServices3.Commons.Config;
 using Beacons.Persistence;
 using Beacons.Data.Version1;
 using System;

@@ -20,9 +20,4 @@
     <ProjectReference Include="..\Service.Test\Service.Test.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Clients\Version1\BeaconsClientV1Fixture.cs" />
-    <Compile Remove="Clients\Version1\BeaconsDirectClientV1Test.cs" />
-    <Compile Remove="Clients\Version1\BeaconsHttpClientV1Test.cs" />
-  </ItemGroup>
 </Project>
